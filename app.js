@@ -1,8 +1,10 @@
 const SPREADSHEET_ID = '1oNFzsq3Wuqyej18k0K73bysJMaYZIoLrYYB1dcOACGU';
 const API_KEY = 'AIzaSyCqPL_5vVIJ_dNqU_u4xqEjFvZVSU1w8sA';
+const DRIVE_FOLDER_ID = '1LFcc3AuQWR-646NLIxTO6dQX0p3ZXZDj';
 
 let guestData = [];
 let galleryPhotos = [];
+let uploadedPhotos = [];
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
@@ -10,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadGuestData();
     createSampleGallery();
     loadGuestbookFromStorage();
+    generateQRCode();
 });
 
 function initializeApp() {
@@ -17,6 +20,20 @@ function initializeApp() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js').catch(() => {
             console.log('Service Worker not available');
+        });
+    }
+}
+
+function generateQRCode() {
+    const siteUrl = window.location.href;
+    const qrContainer = document.getElementById('qr-code');
+    if (qrContainer && !qrContainer.innerHTML) {
+        new QRCode(qrContainer, {
+            text: siteUrl,
+            width: 128,
+            height: 128,
+            colorDark: '#ff9a76',
+            colorLight: '#ffffff'
         });
     }
 }
@@ -29,10 +46,23 @@ function goHome() {
 }
 
 function switchScreen(screenId) {
+    // Check admin password if accessing admin screen
+    if (screenId === 'admin') {
+        const password = prompt('🔐 Mot de passe admin:');
+        if (password !== 'Yoane2026') {
+            alert('❌ Mot de passe incorrect');
+            return;
+        }
+    }
+
     const screens = document.querySelectorAll('.screen');
     screens.forEach(screen => screen.classList.remove('active'));
     document.getElementById(`${screenId}-screen`).classList.add('active');
     window.scrollTo(0, 0);
+
+    if (screenId === 'admin') {
+        loadAdminDashboard();
+    }
 }
 
 function setupEventListeners() {
@@ -212,14 +242,21 @@ async function loadGuestData() {
 }
 
 function createSampleGallery() {
-    galleryPhotos = [
-        { id: '1', category: 'ceremony', emoji: '💒' },
-        { id: '2', category: 'family', emoji: '👨‍👩‍👧‍👦' },
-        { id: '3', category: 'reception', emoji: '🎉' },
-        { id: '4', category: 'friends', emoji: '👯' },
-        { id: '5', category: 'ceremony', emoji: '💐' },
-        { id: '6', category: 'reception', emoji: '🍽️' }
-    ];
+    const categories = ['ceremony', 'family', 'reception', 'friends'];
+    const emojis = ['💒', '👨‍👩‍👧‍👦', '🎉', '🎊', '💍', '🌹', '🥂', '🎭', '🌺', '✨', '🌟', '💫'];
+    
+    galleryPhotos = [];
+    let id = 1;
+    
+    for (let i = 0; i < 12; i++) {
+        galleryPhotos.push({
+            id: String(id++),
+            category: categories[i % categories.length],
+            emoji: emojis[i],
+            title: `Photo ${i + 1}`
+        });
+    }
+    
     displayGallery('all');
 }
 
@@ -230,7 +267,7 @@ function displayGallery(category) {
     galleryGrid.innerHTML = filtered
         .map(photo => `
             <div class="gallery-item" onclick="openModal('${photo.id}')" style="background: linear-gradient(135deg, #ff9a76, #f4a460); cursor: pointer;">
-                <div style="font-size: 4rem;">${photo.emoji}</div>
+                <div style="font-size: 4rem; display: flex; align-items: center; justify-content: center; height: 100%;">${photo.emoji}</div>
             </div>
         `)
         .join('');
@@ -256,6 +293,12 @@ function handleFileSelect(files) {
                 div.className = 'preview-item';
                 div.innerHTML = `<img src="${e.target.result}" alt="preview">`;
                 previewList.appendChild(div);
+                
+                uploadedPhotos.push({
+                    id: Date.now() + Math.random(),
+                    src: e.target.result,
+                    category: 'shared'
+                });
             };
             reader.readAsDataURL(file);
             validFiles++;
@@ -269,14 +312,22 @@ function handleFileSelect(files) {
 }
 
 async function uploadPhotos() {
-    const fileInput = document.getElementById('file-input');
-    if (fileInput.files.length === 0) return;
+    if (uploadedPhotos.length === 0) return;
 
     showLoading(true);
     try {
         await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        galleryPhotos = [...galleryPhotos, ...uploadedPhotos.map(p => ({
+            ...p,
+            emoji: '📸',
+            title: 'Photo partagée'
+        }))];
+        
+        uploadedPhotos = [];
         resetUploadZone();
         alert('✨ Photos partagées avec succès!');
+        displayGallery('all');
     } catch (error) {
         console.error('Erreur:', error);
     } finally {
@@ -293,7 +344,13 @@ function resetUploadZone() {
 function openModal(photoId) {
     const modal = document.getElementById('modal');
     const img = document.getElementById('modal-image');
-    img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23ff9a76" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="white" font-size="48" font-weight="bold"%3E📸%3C/text%3E%3C/svg%3E';
+    const photo = galleryPhotos.find(p => p.id === photoId);
+    
+    if (photo && photo.src) {
+        img.src = photo.src;
+    } else {
+        img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23ff9a76" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="white" font-size="48" font-weight="bold"%3E' + (photo?.emoji || '🖼️') + '%3C/text%3E%3C/svg%3E';
+    }
     modal.classList.remove('hidden');
     modal.classList.add('active');
 }
@@ -360,6 +417,49 @@ function loadGuestbookFromStorage() {
             </div>
         `)
         .join('');
+}
+
+function clearGuestbook() {
+    if (confirm('Êtes-vous sûr de vouloir effacer TOUS les messages?')) {
+        localStorage.removeItem('guestbookMessages');
+        document.getElementById('guestbook-messages').innerHTML = '';
+        alert('✅ Livre d\'or vide');
+    }
+}
+
+function loadAdminDashboard() {
+    // Guests
+    const guestsList = document.getElementById('admin-guests-list');
+    guestsList.innerHTML = `
+        <div class="admin-item">
+            <strong>Total: ${guestData.length} invités</strong>
+            <ul>
+                ${guestData.slice(0, 10).map(g => `<li>${g.prenom} ${g.nom} - Table ${g.table}, Place ${g.place}</li>`).join('')}
+                ${guestData.length > 10 ? `<li>... et ${guestData.length - 10} autres</li>` : ''}
+            </ul>
+        </div>
+    `;
+
+    // Photos
+    const photosList = document.getElementById('admin-photos-list');
+    photosList.innerHTML = `
+        <div class="admin-item">
+            <strong>Total: ${uploadedPhotos.length} photos partagées</strong>
+            ${uploadedPhotos.length > 0 ? '<p>Photos en attente de galerie officielle</p>' : '<p>Aucune photo partagée</p>'}
+        </div>
+    `;
+
+    // Guestbook
+    const messages = JSON.parse(localStorage.getItem('guestbookMessages') || '[]');
+    const guestbookList = document.getElementById('admin-guestbook-list');
+    guestbookList.innerHTML = `
+        <div class="admin-item">
+            <strong>Total: ${messages.length} messages</strong>
+            <ul>
+                ${messages.slice(0, 10).map(m => `<li><strong>${escapeHtml(m.name)}:</strong> ${escapeHtml(m.message.substring(0, 50))}...</li>`).join('')}
+            </ul>
+        </div>
+    `;
 }
 
 function showLoading(show) {

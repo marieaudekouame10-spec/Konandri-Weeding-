@@ -30,6 +30,11 @@
                 <p class="verse-ref">Colossiens 3:14</p>
             </div>
 
+            <div class="qr-section">
+                <p class="qr-text">📱 Partagez ce site facilement:</p>
+                <div id="qr-code" class="qr-code"></div>
+            </div>
+
             <button id="enter-btn" class="btn-primary btn-large">
                 ✨ Entrer dans notre univers ✨
             </button>
@@ -222,6 +227,29 @@
         </div>
     </div>
 
+    <!-- ÉCRAN : ADMIN DASHBOARD -->
+    <div id="admin-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" onclick="goHome()">← Retour</button>
+            <h2>⚙️ Admin Dashboard</h2>
+        </div>
+        <div class="screen-content">
+            <div class="admin-section">
+                <h3>👥 Gestion des invités</h3>
+                <div id="admin-guests-list" class="admin-list"></div>
+            </div>
+            <div class="admin-section">
+                <h3>📸 Modération photos</h3>
+                <div id="admin-photos-list" class="admin-list"></div>
+            </div>
+            <div class="admin-section">
+                <h3>💌 Modération livre d'or</h3>
+                <button class="btn-secondary" onclick="clearGuestbook()">🗑️ Effacer tous les messages</button>
+                <div id="admin-guestbook-list" class="admin-list"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal pour affichage plein écran -->
     <div id="modal" class="modal hidden">
         <div class="modal-content">
@@ -235,6 +263,10 @@
         <div class="spinner"></div>
     </div>
 
+    <!-- Floating Admin Button -->
+    <button id="admin-btn" class="floating-btn" onclick="switchScreen('admin')" title="Admin Dashboard">⚙️</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
