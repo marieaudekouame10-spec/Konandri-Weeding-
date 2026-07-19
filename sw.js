@@ -1,5 +1,3 @@
-// Service Worker pour support offline et cache
-
 const CACHE_NAME = 'wedding-companion-v1';
 const urlsToCache = [
     '/',
@@ -8,16 +6,14 @@ const urlsToCache = [
     '/app.js'
 ];
 
-// Installation
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(urlsToCache);
+            return cache.addAll(urlsToCache).catch(() => {});
         })
     );
 });
 
-// Fetch
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request).then((response) => {
@@ -28,7 +24,6 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-// Activation
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {

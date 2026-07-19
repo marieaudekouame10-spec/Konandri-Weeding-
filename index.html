@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Site compagnon interactif du mariage de Yoane & Marie-Aude">
+    <meta name="theme-color" content="#ff9a76">
+    <title>Yoane & Marie-Aude — 08 Août 2026</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ÉCRAN D'ACCUEIL -->
+    <div id="home-screen" class="screen active">
+        <div class="home-container">
+            <div class="home-hero">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <div class="couple-photos">
+                        <div class="hero-photo-placeholder">💑</div>
+                    </div>
+                    <h1 class="hero-title">Yoane <span class="ampersand">&</span> Marie-Aude</h1>
+                    <p class="hero-date">📅 Samedi 08 août 2026</p>
+                    <p class="hero-location">📍 Menara Garden — Yopougon</p>
+                    <p class="hero-theme">🌅 Tropical Sunset</p>
+                </div>
+            </div>
+
+            <div class="bible-verse">
+                <p class="verse-text">"Par-dessus tout, revêtez-vous de l'amour, qui est le lien de la perfection."</p>
+                <p class="verse-ref">Colossiens 3:14</p>
+            </div>
+
+            <button id="enter-btn" class="btn-primary btn-large">
+                ✨ Entrer dans notre univers ✨
+            </button>
+
+            <div class="cards-grid">
+                <div class="card" data-screen="find-seat">
+                    <div class="card-icon">🪑</div>
+                    <div class="card-title">Trouver ma place</div>
+                </div>
+
+                <div class="card" data-screen="menu">
+                    <div class="card-icon">🍽️</div>
+                    <div class="card-title">Découvrir les saveurs</div>
+                </div>
+
+                <div class="card" data-screen="gifts">
+                    <div class="card-icon">🎁</div>
+                    <div class="card-title">Informations cadeaux</div>
+                </div>
+
+                <div class="card" data-screen="photo-share">
+                    <div class="card-icon">📸</div>
+                    <div class="card-title">Partager mes photos</div>
+                </div>
+
+                <div class="card" data-screen="gallery">
+                    <div class="card-icon">🖼️</div>
+                    <div class="card-title">Album officiel</div>
+                </div>
+
+                <div class="card" data-screen="guestbook">
+                    <div class="card-icon">💌</div>
+                    <div class="card-title">Livre d'or</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN : TROUVER MA PLACE -->
+    <div id="find-seat-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" onclick="goHome()">← Retour</button>
+            <h2>🪑 Trouver ma place</h2>
+        </div>
+        <div class="screen-content">
+            <div class="search-container">
+                <input type="text" id="guest-search" class="search-input" placeholder="Tapez votre nom..." autocomplete="off">
+                <div id="search-suggestions" class="search-suggestions"></div>
+            </div>
+            <div id="seat-result" class="seat-result hidden">
+                <div class="result-card">
+                    <div class="result-greeting" id="result-greeting"></div>
+                    <p style="text-align: center; color: #999; margin: 1rem 0; font-size: 0.9rem;">Nous sommes heureux de vous accueillir pour cette belle journée.</p>
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">🌿</span>
+                            <div><span class="detail-label">Table</span><strong id="result-table" class="detail-value"></strong></div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🪑</span>
+                            <div><span class="detail-label">Place</span><strong id="result-place" class="detail-value"></strong></div>
+                        </div>
+                    </div>
+                    <div class="result-tablemates">
+                        <p class="tablemates-title">👥 Vous serez aux côtés de :</p>
+                        <ul id="tablemates-list"></ul>
+                    </div>
+                </div>
+            </div>
+            <div id="search-error" class="error-message hidden">
+                ⚠️ Invité non trouvé. Vérifiez l'orthographe de votre nom.
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN : MENU/SAVEURS -->
+    <div id="menu-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" onclick="goHome()">← Retour</button>
+            <h2>🍽️ Découvrir les saveurs</h2>
+        </div>
+        <div class="screen-content">
+            <div class="menu-intro">
+                <p class="menu-intro-title">🌸 Quelques saveurs de notre réception 🌸</p>
+                <p class="menu-intro-text">Nous avons imaginé une réception aux couleurs de nos traditions, avec une sélection de mets ivoiriens et de saveurs appréciées de tous.</p>
+            </div>
+            <div class="menu-section">
+                <h3 class="menu-section-title">🥗 Entrée</h3>
+                <div class="menu-item">
+                    <p class="menu-item-name">Salade composée fraîche</p>
+                </div>
+            </div>
+            <div class="menu-section">
+                <h3 class="menu-section-title">🍽️ Plats traditionnels</h3>
+                <div class="menu-item"><p class="menu-item-name">Tchep au poisson et au bœuf</p></div>
+                <div class="menu-item"><p class="menu-item-name">Placali accompagné de sauce kopè</p></div>
+                <div class="menu-item"><p class="menu-item-name">Foutou banane accompagné de sauce graine</p></div>
+                <div class="menu-item"><p class="menu-item-name">Kplé accompagné de foutou manioc</p></div>
+                <div class="menu-item"><p class="menu-item-name">Foutou igname accompagné de sauce gouagouassou</p></div>
+                <div class="menu-item"><p class="menu-item-name">Méchoui de mouton accompagné d'attiéké</p></div>
+                <div class="menu-item"><p class="menu-item-name">Poisson frit et poulet frit accompagnés d'alloco et de frites</p></div>
+                <div class="menu-item"><p class="menu-item-name">Igname bouillie accompagnée de sauce tomate</p></div>
+            </div>
+            <div class="menu-section">
+                <h3 class="menu-section-title">🍰 Douceur</h3>
+                <div class="menu-item"><p class="menu-item-name">Wedding cake</p></div>
+            </div>
+            <div class="menu-section">
+                <h3 class="menu-section-title">🥤 Boissons</h3>
+                <div class="menu-item"><p class="menu-item-name">Eau minérale</p></div>
+                <div class="menu-item"><p class="menu-item-name">Jus naturels</p></div>
+                <div class="menu-item"><p class="menu-item-name">Boissons gazeuses</p></div>
+                <div class="menu-item"><p class="menu-item-name">Bandji</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN : CADEAUX -->
+    <div id="gifts-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" onclick="goHome()">← Retour</button>
+            <h2>🎁 Informations cadeaux</h2>
+        </div>
+        <div class="screen-content">
+            <div class="gifts-card">
+                <p class="gifts-text"><strong>Votre présence est le plus beau témoignage d'affection que nous puissions recevoir.</strong></p>
+                <p class="gifts-text">Pour celles et ceux qui souhaiteraient néanmoins nous offrir un présent, nous privilégions les cadeaux en espèces, afin de pouvoir les emporter plus facilement avec nous à notre retour à Dakar.</p>
+                <p class="gifts-text">Un dispositif discret sera prévu lors de la réception.</p>
+                <p class="gifts-text gifts-thank"><strong>Merci du fond du cœur pour votre délicatesse.</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN : PARTAGER MES PHOTOS -->
+    <div id="photo-share-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" onclick="goHome()">← Retour</button>
+            <h2>📸 Partager mes photos</h2>
+        </div>
+        <div class="screen-content">
+            <div class="upload-zone" id="upload-zone">
+                <div class="upload-icon">📸</div>
+                <p class="upload-text">Cliquez ou glissez vos photos ici</p>
+                <p class="upload-hint">Format: JPG, PNG | Max: 10MB</p>
+                <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+            </div>
+            <div id="preview-container" class="preview-container hidden">
+                <h3>📷 Aperçu avant envoi</h3>
+                <div id="preview-list" class="preview-list"></div>
+                <div class="preview-actions">
+                    <button id="upload-btn" class="btn-primary">✅ Envoyer mes photos</button>
+                    <button id="cancel-upload" class="btn-secondary">❌ Annuler</button>
+                </div>
+            </div>
+            <div id="photos-feed" class="photos-feed"></div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN : ALBUM OFFICIEL -->
+    <div id="gallery-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" onclick="goHome()">← Retour</button>
+            <h2>🖼️ Album officiel</h2>
+        </div>
+        <div class="screen-content">
+            <div class="gallery-tabs">
+                <button class="gallery-tab active" data-category="all">Tous</button>
+                <button class="gallery-tab" data-category="ceremony">Cérémonie</button>
+                <button class="gallery-tab" data-category="family">Famille</button>
+                <button class="gallery-tab" data-category="friends">Amis</button>
+                <button class="gallery-tab" data-category="reception">Réception</button>
+            </div>
+            <div id="gallery-grid" class="gallery-grid"></div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN : LIVRE D'OR -->
+    <div id="guestbook-screen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" onclick="goHome()">← Retour</button>
+            <h2>💌 Livre d'or</h2>
+        </div>
+        <div class="screen-content">
+            <div class="guestbook-form">
+                <input type="text" id="guestbook-name" class="input-field" placeholder="Votre nom">
+                <textarea id="guestbook-message" class="textarea-field" placeholder="Votre message..." rows="5"></textarea>
+                <button id="guestbook-submit" class="btn-primary">💌 Poster mon message</button>
+            </div>
+            <div id="guestbook-messages" class="guestbook-messages"></div>
+        </div>
+    </div>
+
+    <!-- Modal pour affichage plein écran -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <img id="modal-image" src="" alt="">
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
